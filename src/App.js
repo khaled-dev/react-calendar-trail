@@ -10,6 +10,8 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
     const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     const formInitialState = {
         title: '',
@@ -38,11 +40,19 @@ const MyCalendar = () => {
         setShowModal(true);
     };
 
-    // for deletion
+    // for details
     const handleSelectEvent = (event) => {
-        if (window.confirm(`Are you sure you want to delete the event '${event.title}'?`)) {
-            setEvents(events.filter(e => e !== event));
-        }
+        // if (window.confirm(`Are you sure you want to delete the event '${event.title}'?`)) {
+        //     setEvents(events.filter(e => e !== event));
+        // }
+
+        setSelectedEvent(event);
+        setShowDetailsModal(true);
+    };
+
+    const handleEventDelete = () => {
+        setEvents(events.filter(e => e !== selectedEvent));
+        setShowDetailsModal(false);
     };
 
     // for submiting
@@ -149,6 +159,33 @@ const MyCalendar = () => {
                     </Button>
                     <Button variant="primary" onClick={handleEventAdd}>
                         Save Event
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Event Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {selectedEvent && (
+                            <>
+                                <p><strong>Title:</strong> {selectedEvent.title}</p>
+                                <p><strong>Number Of Pax:</strong> {selectedEvent.number_of_pax}</p>
+                                <p><strong>Price:</strong> {selectedEvent.price}</p>
+                                <p><strong>Notes:</strong> {selectedEvent.notes}</p>
+                                <p><strong>Tee Time:</strong> {moment(selectedEvent.start).format('h:mm a')}</p>
+                                <p><strong>Date:</strong> {moment(selectedEvent.start).format('MMMM Do YYYY')}</p>
+                                <p><strong>is Public Holiday:</strong> {selectedEvent.is_public_holiday}</p>
+                            </>
+                        )}
+                    </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+                        Close
+                    </Button>
+                    <Button variant="danger" onClick={handleEventDelete}>
+                        Delete Event
                     </Button>
                 </Modal.Footer>
             </Modal>
