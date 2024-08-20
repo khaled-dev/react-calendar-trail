@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Calendar, momentLocalizer,Views } from 'react-big-calendar';
 import moment from 'moment';
 import { Modal, Button, Form } from 'react-bootstrap';
@@ -22,30 +22,38 @@ const MyCalendar = () => {
     }
     const [formData, setFormData] = useState(formInitialState);
 
+    useEffect(() => {
+        console.log(events)
+    }, [events])
+
+    // to handle the show
     const handleSelectSlot = ({ start, end }) => {
         const dateRange = [];
         let currentDate = moment(start);
-        while (currentDate <= moment(end)) {
+        while (currentDate < moment(end)) {
             dateRange.push(currentDate.clone());
             currentDate.add(1, 'days');
         }
-
-        setFormData({
-            dateRange,
-        });
+        setFormData({ ...formData, dateRange });
         setShowModal(true);
     };
 
+    // for deletion
     const handleSelectEvent = (event) => {
         if (window.confirm(`Are you sure you want to delete the event '${event.title}'?`)) {
             setEvents(events.filter(e => e !== event));
         }
     };
 
+    // for submiting
     const handleEventAdd = () => {
+        // loop over [daterange]
         const newEvents = formData.dateRange.map((date) => {
             const [teeHour, teeMinute] = formData.tee_time.split(':');
             const teeTime = date.clone().set({ hour: teeHour, minute: teeMinute }).toDate();
+
+            const start = date.clone().set({ hour: teeHour, minute: teeHour }).toDate();
+            const end = date.clone().set({ hour: teeHour, minute: teeHour }).toDate();
 
             return {
                 title: formData.title,
@@ -53,7 +61,9 @@ const MyCalendar = () => {
                 price: formData.price,
                 notes: formData.notes,
                 tee_time: teeTime,
-                is_public_holiday: false
+                is_public_holiday: false,
+                start,
+                end
             };
         });
 
