@@ -55,9 +55,15 @@ const MyCalendar = () => {
         setShowDetailsModal(false);
     };
 
+    // for color
+    const eventPropGetter = (event) => {
+        const backgroundColor = event.color || 'lightblue'; // Default color if not set
+        return { style: { backgroundColor } };
+    };
+
     // for submiting
     const handleEventAdd = () => {
-        // loop over [daterange]
+        // loop over [date range]
         const newEvents = formData.dateRange.map((date) => {
             const [teeHour, teeMinute] = formData.tee_time.split(':');
             const teeTime = date.clone().set({ hour: teeHour, minute: teeMinute }).toDate();
@@ -73,7 +79,8 @@ const MyCalendar = () => {
                 tee_time: teeTime,
                 is_public_holiday: formData.is_public_holiday,
                 start,
-                end
+                end,
+                color: formData.is_public_holiday === true ? 'red' : 'blue', // Set color based on title
             };
         });
 
@@ -91,6 +98,7 @@ const MyCalendar = () => {
                 views={[Views.MONTH, Views.WEEK, Views.DAY]}
                 onSelectSlot={handleSelectSlot}
                 onSelectEvent={handleSelectEvent}
+                eventPropGetter={eventPropGetter}
                 style={{ height: 600 }}
             />
 
