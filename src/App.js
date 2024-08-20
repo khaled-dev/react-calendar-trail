@@ -11,6 +11,7 @@ const MyCalendar = () => {
     const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     const formInitialState = {
@@ -66,8 +67,6 @@ const MyCalendar = () => {
         // loop over [date range]
         const newEvents = formData.dateRange.map((date) => {
             const [teeHour, teeMinute] = formData.tee_time?.split(':');
-            const teeTime = date.clone().set({ hour: teeHour, minute: teeMinute }).toDate();
-
             const start = date.clone().set({ hour: teeHour, minute: teeHour }).toDate();
             const end = date.clone().set({ hour: teeHour, minute: teeHour }).toDate();
 
@@ -76,16 +75,42 @@ const MyCalendar = () => {
                 number_of_pax: formData.number_of_pax,
                 price: formData.price,
                 notes: formData.notes,
-                tee_time: teeTime,
+                tee_time: formData.tee_time,
                 is_public_holiday: formData.is_public_holiday,
                 start,
                 end,
-                color: formData.is_public_holiday === true ? 'red' : 'blue', // Set color based on title
+                color: formData.is_public_holiday === true ? 'red' : 'blue',
             };
         });
 
         setEvents([...events, ...newEvents]);
         setShowModal(false);
+    };
+
+    const openEditModal = () => {
+        setFormData(selectedEvent);
+
+        setShowDetailsModal(false);
+        setShowEditModal(true);
+    };
+
+    const handleEventUpdate = () => {
+        setEvents(events.map(event =>
+            event === selectedEvent
+                ? {
+                    ...event,
+                    title: formData.title,
+                    number_of_pax: formData.number_of_pax,
+                    price: formData.price,
+                    notes: formData.notes,
+                    tee_time: formData.tee_time,
+                    is_public_holiday: formData.is_public_holiday,
+                    color: formData.is_public_holiday === true ? 'red' : 'blue',
+                }
+                : event
+        ));
+        setShowEditModal(false);
+        setShowDetailsModal(false);
     };
 
     return (
@@ -102,8 +127,8 @@ const MyCalendar = () => {
                 style={{ height: 600 }}
             />
 
-            <Modal isOpen={showModal} toggle={() => setShowModal(false)}>
-                <ModalHeader toggle={() => setShowModal(false)}>Add Event</ModalHeader>
+            <Modal isOpen={showModal || showEditModal} toggle={() => {setShowModal(false); setShowEditModal(false)}}>
+                <ModalHeader toggle={() => {setShowModal(false); setShowEditModal(false)}}>{showModal ? 'Add Event' : 'Update Event'}</ModalHeader>
                 <ModalBody>
                     <Form>
                         <FormGroup>
@@ -128,6 +153,7 @@ const MyCalendar = () => {
                             <Label for="price">Price</Label>
                             <Input
                                 id="price"
+                                bsSize="lg"
                                 type="textarea"
                                 value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
@@ -157,17 +183,17 @@ const MyCalendar = () => {
                             <Input
                                 id="is_public_holiday"
                                 type="checkbox"
-                                value={formData.is_public_holiday}
+                                checked={formData.is_public_holiday}
                                 onChange={(e) => setFormData({ ...formData, is_public_holiday: e.target.checked })}
                             />
                         </FormGroup>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <Button variant="secondary" onClick={() => {setShowModal(false); setShowEditModal(false)}}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleEventAdd}>
+                    <Button variant="primary" onClick={(e) => {showModal ? handleEventAdd() : handleEventUpdate()}}>
                         Save Event
                     </Button>
                 </ModalFooter>
@@ -191,6 +217,9 @@ const MyCalendar = () => {
                 <ModalFooter>
                     <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
                         Close
+                    </Button>
+                    <Button variant="primary" onClick={openEditModal}>
+                        Edit Event
                     </Button>
                     <Button variant="danger" onClick={handleEventDelete}>
                         Delete Event
