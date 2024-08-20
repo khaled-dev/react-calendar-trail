@@ -16,7 +16,7 @@ const MyCalendar = () => {
     const formInitialState = {
         title: '',
         number_of_pax: 0,
-        price: 0.0,
+        price: '{"key": "value"}',
         notes: '',
         tee_time: '',
         is_public_holiday: false,
@@ -120,7 +120,7 @@ const MyCalendar = () => {
                             <Input
                                 id="number_of_pax"
                                 type="number"
-                                value={formData.number_of_pax || 0}
+                                value={formData.number_of_pax}
                                 onChange={(e) => setFormData({ ...formData, number_of_pax: e.target.value })}
                             />
                         </FormGroup>
@@ -128,8 +128,8 @@ const MyCalendar = () => {
                             <Label for="price">Price</Label>
                             <Input
                                 id="price"
-                                type="number"
-                                value={formData.price || 0}
+                                type="textarea"
+                                value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             />
                         </FormGroup>
@@ -139,7 +139,7 @@ const MyCalendar = () => {
                                 id="notes"
                                 type="textarea"
                                 bsSize="lg"
-                                value={formData.notes || ''}
+                                value={formData.notes}
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             />
                         </FormGroup>
@@ -148,7 +148,7 @@ const MyCalendar = () => {
                             <Input
                                 id="tee_time"
                                 type="time"
-                                value={formData.tee_time || ''}
+                                value={formData.tee_time}
                                 onChange={(e) => setFormData({ ...formData, tee_time: e.target.value })}
                             />
                         </FormGroup>
@@ -157,7 +157,7 @@ const MyCalendar = () => {
                             <Input
                                 id="is_public_holiday"
                                 type="checkbox"
-                                value={formData.is_public_holiday || false}
+                                value={formData.is_public_holiday}
                                 onChange={(e) => setFormData({ ...formData, is_public_holiday: e.target.checked })}
                             />
                         </FormGroup>
@@ -178,7 +178,7 @@ const MyCalendar = () => {
                 <ModalBody>
                         {selectedEvent && (
                             <>
-                                <p><strong>Title:</strong> {selectedEvent.title}</p>
+                                <p><strong>Title:</strong> {selectedEvent.title} </p>
                                 <p><strong>Number Of Pax:</strong> {selectedEvent.number_of_pax}</p>
                                 <p><strong>Price:</strong> {selectedEvent.price}</p>
                                 <p><strong>Notes:</strong> {selectedEvent.notes}</p>
