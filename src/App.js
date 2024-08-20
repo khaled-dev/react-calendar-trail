@@ -71,7 +71,7 @@ const MyCalendar = () => {
                 price: formData.price,
                 notes: formData.notes,
                 tee_time: teeTime,
-                is_public_holiday: false,
+                is_public_holiday: formData.is_public_holiday,
                 start,
                 end
             };
@@ -176,7 +176,7 @@ const MyCalendar = () => {
                                 <p><strong>Notes:</strong> {selectedEvent.notes}</p>
                                 <p><strong>Tee Time:</strong> {moment(selectedEvent.start).format('h:mm a')}</p>
                                 <p><strong>Date:</strong> {moment(selectedEvent.start).format('MMMM Do YYYY')}</p>
-                                <p><strong>is Public Holiday:</strong> {selectedEvent.is_public_holiday}</p>
+                                <p><strong>is Public Holiday:</strong> {selectedEvent.is_public_holiday.toString()}</p>
                             </>
                         )}
                     </Modal.Body>
