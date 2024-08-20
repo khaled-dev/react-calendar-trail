@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import { Calendar, momentLocalizer,Views } from 'react-big-calendar';
+import React, { useState, useEffect } from 'react';
+import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -65,7 +65,7 @@ const MyCalendar = () => {
     const handleEventAdd = () => {
         // loop over [date range]
         const newEvents = formData.dateRange.map((date) => {
-            const [teeHour, teeMinute] = formData.tee_time.split(':');
+            const [teeHour, teeMinute] = formData.tee_time?.split(':');
             const teeTime = date.clone().set({ hour: teeHour, minute: teeMinute }).toDate();
 
             const start = date.clone().set({ hour: teeHour, minute: teeHour }).toDate();
@@ -102,80 +102,80 @@ const MyCalendar = () => {
                 style={{ height: 600 }}
             />
 
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add Event</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+            <Modal isOpen={showModal} toggle={() => setShowModal(false)}>
+                <ModalHeader toggle={() => setShowModal(false)}>Add Event</ModalHeader>
+                <ModalBody>
                     <Form>
-                        <Form.Group>
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control
+                        <FormGroup>
+                            <Label for="title">Title</Label>
+                            <Input
+                                id="title"
                                 type="text"
-                                value={formData.title}
+                                value={formData.title || ''}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Number Of Pax</Form.Label>
-                            <Form.Control
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="number_of_pax">Number Of Pax</Label>
+                            <Input
+                                id="number_of_pax"
                                 type="number"
-                                value={formData.number_of_pax}
+                                value={formData.number_of_pax || 0}
                                 onChange={(e) => setFormData({ ...formData, number_of_pax: e.target.value })}
                             />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Price</Form.Label>
-                            <Form.Control
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="price">Price</Label>
+                            <Input
+                                id="price"
                                 type="number"
-                                step="0.01"
-                                placeholder="$0.00"
-                                value={formData.price}
+                                value={formData.price || 0}
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Notes</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={5}
-                                value={formData.notes}
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="notes">Notes</Label>
+                            <Input
+                                id="notes"
+                                type="textarea"
+                                bsSize="lg"
+                                value={formData.notes || ''}
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Tee Time</Form.Label>
-                            <Form.Control
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="tee_time">Tee Time</Label>
+                            <Input
+                                id="tee_time"
                                 type="time"
-                                value={formData.tee_time}
+                                value={formData.tee_time || ''}
                                 onChange={(e) => setFormData({ ...formData, tee_time: e.target.value })}
                             />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Is Holiday</Form.Label>
-                            <Form.Check
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="is_public_holiday">Is Holiday</Label>
+                            <Input
+                                id="is_public_holiday"
                                 type="checkbox"
-                                value={formData.is_public_holiday}
+                                value={formData.is_public_holiday || false}
                                 onChange={(e) => setFormData({ ...formData, is_public_holiday: e.target.checked })}
                             />
-                        </Form.Group>
+                        </FormGroup>
                     </Form>
-                </Modal.Body>
-                <Modal.Footer>
+                </ModalBody>
+                <ModalFooter>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleEventAdd}>
                         Save Event
                     </Button>
-                </Modal.Footer>
+                </ModalFooter>
             </Modal>
 
-            <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Event Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
+            <Modal isOpen={showDetailsModal} toggle={() => setShowDetailsModal(false)}>
+                <ModalHeader toggle={() => setShowDetailsModal(false)}>Event Details</ModalHeader>
+                <ModalBody>
                         {selectedEvent && (
                             <>
                                 <p><strong>Title:</strong> {selectedEvent.title}</p>
@@ -187,15 +187,15 @@ const MyCalendar = () => {
                                 <p><strong>is Public Holiday:</strong> {selectedEvent.is_public_holiday.toString()}</p>
                             </>
                         )}
-                    </Modal.Body>
-                <Modal.Footer>
+                    </ModalBody>
+                <ModalFooter>
                     <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
                         Close
                     </Button>
                     <Button variant="danger" onClick={handleEventDelete}>
                         Delete Event
                     </Button>
-                </Modal.Footer>
+                </ModalFooter>
             </Modal>
         </div>
     );
