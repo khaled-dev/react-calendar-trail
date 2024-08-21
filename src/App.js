@@ -5,6 +5,14 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, La
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Set Monday as the first day of the week globally
+moment.updateLocale('en', {
+    week: {
+        dow: 1, // Monday is the first day of the week
+        doy: 4, // The week that contains Jan 4th is the first week of the year
+    },
+});
+
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
@@ -14,6 +22,7 @@ const MyCalendar = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
+    // validations
     const formInitialState = {
         title: '',
         number_of_pax: 0,
